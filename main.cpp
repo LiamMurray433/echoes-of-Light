@@ -9,7 +9,7 @@
 
 int main() {
 
-    sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "Game");
+    sf::RenderWindow window(sf::VideoMode({Game::getWindowWidth(),Game::getWindowHeight()}), "Echoes of Light");
 
     
     MainMenu menu;

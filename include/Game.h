@@ -12,6 +12,9 @@ public:
 
     int run();
 
+    static unsigned int getWindowWidth() { return windowWidth; }
+    static unsigned int getWindowHeight() { return windowHeight; }
+
 private:
     bool initialize();
     bool loadResources();
@@ -25,8 +28,8 @@ private:
     std::string findResourcePath(const std::string& relativePath) const;
 
 private:
-    static constexpr unsigned int windowWidth = 800;
-    static constexpr unsigned int windowHeight = 600;
+    static constexpr unsigned int windowWidth = 1920;
+    static constexpr unsigned int windowHeight = 1080;
     static constexpr unsigned int framerateLimit = 60;
 
     sf::RenderWindow window_;
