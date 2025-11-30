@@ -27,12 +27,19 @@ set(EOL_SOURCES
     src/components/RenderComponent.cpp
     src/components/AnimationComponent.cpp
     src/components/LightComponent.cpp
+    src/components/LightEmitterComponent.cpp
     src/components/PlayerComponent.cpp
     src/components/EnemyComponent.cpp
+    src/components/MeleeAttackComponent.cpp
     src/components/LightSourceComponent.cpp
+    src/components/MirrorComponent.cpp
     src/components/PuzzleComponent.cpp
     src/components/UpgradeComponent.cpp
-    src/Systems.cpp
+    src/systems/InputSystem.cpp
+    src/systems/AnimationSystem.cpp
+    src/systems/RenderSystem.cpp
+    src/systems/CombatSystem.cpp
+    src/systems/LightSystem.cpp
   
     
 )
@@ -45,3 +52,5 @@ set_target_properties(echoes-of-light PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
 
+
+file(COPY "resources" DESTINATION "bin")

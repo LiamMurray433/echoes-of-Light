@@ -1,4 +1,4 @@
-#include "Map.hpp"
+#include "components/Map.h"
 #include <fstream>
 #include <iostream>
 

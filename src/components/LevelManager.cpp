@@ -1,10 +1,13 @@
-#include "LevelManager.hpp"
+#include "components/LevelManager.h"
 #include <iostream>
 
-constexpr int TILE_SIZE = 32; // used for converting tile -> world coords
 
-LevelManager::LevelManager() {
-    // Ordered maps define game progression
+// Constructor
+LevelManager::LevelManager()
+    : currentLevelIndex(0),
+      map("resources/levels/past.txt")   // default temp, replaced on load
+{
+    // Predefined level files
     levelFiles = {
         "resources/levels/past.txt",
         "resources/levels/present.txt",
@@ -12,56 +15,78 @@ LevelManager::LevelManager() {
     };
 }
 
+// Load a specific level by filename
+bool LevelManager::loadLevel(const std::string& levelName) {
+    std::cout << "Loading level: " << levelName << std::endl;
+    return map.loadFromFile(levelName);
+}
+
+// Load the current level in the list
 bool LevelManager::loadCurrentLevel() {
     if (currentLevelIndex >= levelFiles.size()) {
-        std::cout << "No more levels to load.\n";
+        std::cout << "No more levels to load." << std::endl;
         return false;
     }
 
-    std::string filename = levelFiles[currentLevelIndex];
+    const std::string& filename = levelFiles[currentLevelIndex];
 
-    std::cout << "Loading level: " << filename << std::endl;
+    std::cout << "Loading level " << (currentLevelIndex + 1)
+              << " / " << levelFiles.size()
+              << " : " << filename << std::endl;
 
-    bool success = map.loadFromFile(filename);
-    
-    if (success) {
-        levelCompleted = false;
-        findExitTile();
-    }
-
-    return success;
+    return map.loadFromFile(filename);
 }
 
+// Advance to the next level
 void LevelManager::nextLevel() {
-    currentLevelIndex++;
+    if (currentLevelIndex < levelFiles.size()) {
+        currentLevelIndex++;
+    }
 
-    if (!isFinished()) {
+    if (!isLevelComplete()) {
         loadCurrentLevel();
     }
 }
 
-bool LevelManager::isFinished() const {
+
+// Check if all levels are finished
+bool LevelManager::isLevelComplete() const {
     return currentLevelIndex >= levelFiles.size();
 }
 
-void LevelManager::markLevelComplete() {
-    levelCompleted = true;
+// Return the map reference
+const Map& LevelManager::getCurrentMap() const {
+    return map;
 }
 
-bool LevelManager::isLevelComplete() const {
-    return levelCompleted;
-}
+// SCAN MAP FOR LIGHTS, MIRRORS, EXIT
 
-void LevelManager::findExitTile() {
+LevelObjects LevelManager::scanObjects() const {
+    LevelObjects objs;
+
     for (int y = 0; y < map.getHeight(); ++y) {
         for (int x = 0; x < map.getWidth(); ++x) {
-            if (map.getTile(x, y) == TileType::END) {
-                exitTile = {x, y};
-                std::cout << "Exit tile found at: (" << x << ", " << y << ")\n";
-                return;
+
+            TileType t = map.getTile(x, y);
+
+            switch (t) {
+                case TileType::LIGHT_SOURCE:
+                    objs.lightTiles.emplace_back(x, y);
+                    break;
+
+                case TileType::MIRROR:
+                    objs.mirrorTiles.emplace_back(x, y);
+                    break;
+
+                case TileType::END:
+                    objs.exitTile = {x, y};
+                    break;
+
+                default:
+                    break;
             }
         }
     }
 
-    std::cerr << "WARNING: No exit tile found in this level.\n";
+    return objs;
 }

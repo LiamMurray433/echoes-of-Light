@@ -1,41 +1,36 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Map.h"
+#include <SFML/System/Vector2.hpp>
+
+#include "components/Map.h"
+
+// Struct that stores all special tile positions for a level
+struct LevelObjects {
+    std::vector<sf::Vector2i> lightTiles;
+    std::vector<sf::Vector2i> mirrorTiles;
+    sf::Vector2i exitTile { -1, -1 };
+};
 
 class LevelManager {
+
 public:
     LevelManager();
-    
-    // Load current level from list
-    bool loadCurrentLevel();
+    ~LevelManager() = default;
 
-    // Move to next level (Past -> Present -> Future)
+    bool loadLevel(const std::string& levelName);
+    bool loadCurrentLevel();
     void nextLevel();
 
-    // Returns true if all levels are finished
-    bool isFinished() const;
+    bool isLevelComplete() const;
+    const Map& getCurrentMap() const;
 
-    // Called from game loop when player reaches the exit tile
-    void markLevelComplete();
-
-    // Access the map for rendering, collision, etc.
-    const Map& getMap() const { return map; }
-
-    // Gets exit tile position for win detection
-    sf::Vector2i getExitTile() const { return exitTile; }
+    LevelObjects scanObjects() const;
 
 private:
     std::vector<std::string> levelFiles;
-
     int currentLevelIndex = 0;
-    bool levelCompleted = false;
 
+    // Active map instance
     Map map;
-
-    // Store exit position for level logic
-    sf::Vector2i exitTile { -1, -1 };
-
-    // Helper to find exit tile after loading
-    void findExitTile();
 };
