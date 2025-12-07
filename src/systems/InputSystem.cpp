@@ -33,40 +33,6 @@ namespace {
     }
 }
 
-void InputSystem::update(Entity& player, float deltaTime, const sf::RenderWindow& window) {
-    auto* transform = player.getComponent<eol::TransformComponent>();
-    auto* playerComp = player.getComponent<eol::PlayerComponent>();
-    auto* animation = player.getComponent<eol::AnimationComponent>();
-
-    if (!transform || !playerComp) {
-        return;
-    }
-
-    playerComp->tickInvulnerability(deltaTime);
-
-    sf::Vector2f movement = getMovementInput();
-    const bool isMoving = (movement.x != 0.f || movement.y != 0.f);
-
-    if (animation) {
-        animation->setAnimation(isMoving ? "walk" : "idle");
-    }
-
-    if (isMoving) {
-        movement = normalizeVector(movement);
-
-        const float speed = playerComp->getMovementSpeed();
-        sf::Vector2f pos = transform->getPosition();
-        pos.x += movement.x * speed * deltaTime;
-        pos.y += movement.y * speed * deltaTime;
-
-        // Clamp to world bounds using GameSettings
-        pos = GameSettings::clampToWorld(pos, 0.025f);
-
-        transform->setPosition(pos);
-    }
-
-    updatePlayerEmitter(player, window);
-}
 
 // update with collision checking to test
 void InputSystem::updateWithCollision(Entity& player,

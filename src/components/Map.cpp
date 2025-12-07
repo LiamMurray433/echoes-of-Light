@@ -60,29 +60,6 @@ void Map::setTextures(const sf::Texture& wallTex,
     emptyTexture = &emptyTex;
 }
 
-/*
-void Map::draw(sf::RenderWindow& window, int tileSize) const {
-    if (width == 0 || height == 0) return;
-    for (int y=0;y<height;++y) {
-        for (int x=0;x<width;++x) {
-            const sf::Texture* tex = nullptr;
-            switch (getTile(x,y)) {
-                case TileType::WALL: tex = wallTexture; break;
-                case TileType::LIGHT_SOURCE: tex = lightTexture; break;
-                case TileType::MIRROR: tex = mirrorTexture; break;
-                case TileType::START: tex = startTexture; break;
-                case TileType::END: tex = exitTexture; break;
-                case TileType::EMPTY: default: tex = emptyTexture; break;
-            }
-            if (tex) {
-                sf::Sprite s(*tex);
-                s.setPosition({ static_cast<float>(x * tileSize), static_cast<float>(y * tileSize) });
-                window.draw(s);
-            }
-        }
-    }
-}
-*/
 
 void Map::draw(sf::RenderWindow& window, float tileSize, sf::Vector2f offset) const {
     if (width == 0 || height == 0) return;
